@@ -1,12 +1,6 @@
-let listaDeNumerosSorteados = [];
-let numeroLimite = 100;
-let numeroSecreto = gerarNumeroAleatorio();
-let tentativas = 1;
+let amigos = [];
 
-function exibirTextoNaTela(tag, texto) {
-    let campo = document.querySelector(tag);
-    campo.innerHTML = texto;
-    //responsiveVoice.speak(texto, 'Brazilian Portuguese Female', {rate:1.2}); // Adiciona a funcionalidade de falar o texto
+function exibirTexto(texto) {
     if ('speechSynthesis' in window) {
         let utterance = new SpeechSynthesisUtterance(texto);
         utterance.lang = 'pt-BR'; 
@@ -17,65 +11,63 @@ function exibirTextoNaTela(tag, texto) {
     }
 }
 
-function exibirMensagemInicial() {
-    exibirTextoNaTela('h1', 'Jogo do número secreto!');
-    exibirTextoNaTela('p', 'Escolha um número entre 1 e 100!');
+function iniciarJogo() {
+    const mensagemInicial = "Digite o nome dos seus amigos!";
+    exibirTexto(mensagemInicial);
 }
 
-exibirMensagemInicial();
+function adicionarAmigo() {
+    const input = document.getElementById("amigo");
+    const nome = input.value.trim();
 
-function verificarChute() {
-    let chute = document.querySelector('input').value;
+    // Verifica se o nome está vazio
+    if (nome === "") {
+        alert("Informe um nome válido!");
+        exibirTexto("Informe um nome válido!");
+        return;
+    }
+
+    // Verifica se o nome contém apenas letras
+    if (!/^[A-Za-z]+$/.test(nome)) {
+        alert("Nome inválido! Digite novamente.");
+        exibirTexto("Nome inválido! Digite novamente.");
+        input.value = "";
+        return;
+    }
+
+    amigos.push(nome);
+    atualizarLista();
+    input.value = "";
+    exibirTexto(`Amigo ${nome} adicionado!`);
+}
+
+function atualizarLista() {
+    const lista = document.getElementById("listaAmigos");
+    lista.innerHTML = "";
     
-    if (chute == numeroSecreto) {
-        exibirTextoNaTela('h1', 'Acertou!');
-        let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa';
-        let mensagemTentativas = `Você descobriu o número secreto com ${tentativas} ${palavraTentativa}!`;
-        exibirTextoNaTela('p', mensagemTentativas);
-        document.getElementById('reiniciar').removeAttribute('disabled');
-    } else {
-        if (chute > numeroSecreto) {
-            exibirTextoNaTela('p', 'O número secreto é menor!');
-        } else {
-            exibirTextoNaTela('p', 'O número secreto é maior!');
-        }
-        tentativas++;
-        limparCampo();
+    amigos.forEach(nome => {
+        const li = document.createElement("li");
+        li.textContent = nome;
+        lista.appendChild(li);
+    });
+}
+
+function sortearAmigo() {
+    if (amigos.length < 2) {
+        alert("Informe mais um nome de amigo!");
+        exibirTexto("Informe mais um nome de amigo!");
+        return;
     }
+    
+    const sorteado = amigos[Math.floor(Math.random() * amigos.length)];
+    const resultado = document.getElementById("resultado");
+    resultado.innerHTML = `<li class="resultado-nome">${sorteado}</li>`;
+    exibirTexto(`Amigo sorteado: ${sorteado}`);
 }
 
-function gerarNumeroAleatorio() {
-    let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
-    let quantidadeDeElementosNaLista = listaDeNumerosSorteados.length;
-
-    if (quantidadeDeElementosNaLista == numeroLimite) {
-        listaDeNumerosSorteados = [];
-    }
-    if (listaDeNumerosSorteados.includes(numeroEscolhido)) {
-        return gerarNumeroAleatorio();
-    } else {
-        listaDeNumerosSorteados.push(numeroEscolhido);
-        console.log(listaDeNumerosSorteados)
-        return numeroEscolhido;
-    }
+function novoSorteio() {
+    amigos = [];
+    document.getElementById("listaAmigos").innerHTML = "";
+    document.getElementById("resultado").innerHTML = "";
+    exibirTexto("Lista de amigos resetada. Novo sorteio pronto!");
 }
-
-function limparCampo() {
-    chute = document.querySelector('input');
-    chute.value = '';
-}
-
-function reiniciarJogo() {
-    numeroSecreto = gerarNumeroAleatorio();
-    limparCampo();
-    tentativas = 1;
-    exibirMensagemInicial();
-    document.getElementById('reiniciar').setAttribute('disabled', true)
-}
-
-
-
-
-
-
-
