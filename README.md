@@ -25,8 +25,7 @@ Este é um simples **Jogo do Amigo Secreto** desenvolvido com **HTML**, **CSS** 
 1. Acesse o site no seu computador:
 
    ```bash
-   https://vercel.com/dyeggomgs-projects/amigo-secreto
-
+   https://challenge-amigo-secreto-pt-main-gamma.vercel.app
 ## Tecnologias Ultilizadas
 <div>
   <img src="https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white">
